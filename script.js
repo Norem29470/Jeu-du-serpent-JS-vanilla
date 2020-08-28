@@ -19,15 +19,17 @@ window.onload = function()
     var delay = 1000;
 
     // Pour créer notre serpent, on l'initialise dans une variable
-    //var snake;
-    var snake;
+    //var snakee;
+    var snakee;
+
+    var canvas;
 
     // On a déclaré des fonctions, mais pour lancer le script, il faut bien faire appel à ces fonctions, d'où l'appel de init() suivant
     init();
 
     function init()
     {
-        var canvas = document.createElement('canvas');
+        canvas = document.createElement('canvas');
         canvas.width = canvasWidth;
         canvas.height = canvasHeight;
         canvas.style.border = "1px solid";
@@ -41,7 +43,7 @@ window.onload = function()
         context = canvas.getContext('2d');
 
         // Ici, on va définir les blocs reliés sur la grille qui composent le corps du serpent [[x1, y1], [x2,y2], etc...]
-        snake = new Snake( [[6,4], [5,4], [4,4]] );
+        snakee = new Snake([[6,4], [5,4], [4,4]]);
 
         // Après l'initialisation, on fait appel à la méthode refreshCanvas
         refreshCanvas();
@@ -53,10 +55,13 @@ window.onload = function()
         console.log('Canvas refreshed');
 
         // Pour ne pas avoir de duplication du canvas, mais un déplacement de ce dernier, on va l'effacer pour qu'il réapparaisse plus loin
-        context.clearRect(0, 0, canvasWidth, canvasHeight)
+        context.clearRect(0, 0, canvas.width, canvas.height);
 
         // A chaque refresh, on veut redessiner notre serpent, on fait donc
-        snake.draw();
+        snakee.draw();
+
+        // On fait appel à la méthode advance() pour donner du mouvement au serpent
+        snakee.advance();
 
         // Avec le refreshCanvas, on obtient bien un dessin de notre canvas, mais le rectangle reste immobile. On va donc utiliser la fonction setTimeout() qui permet d'exécuter une fonction à chaque fois qu'un certain délai est expiré
         setTimeout(refreshCanvas, delay);
@@ -69,13 +74,13 @@ window.onload = function()
     {
         var x = position[0] * blockSize;
         var y = position[1] * blockSize;
-        context.fillRect(x, y, blockSize, blockSize)
-
+        context.fillRect(x, y, blockSize, blockSize);
     }
 
-    function Snake(body)
+    function Snake(body) //, direction)
     {
         this.body = body;
+        // this.direction = direction;
         this.draw = function()
         {
             context.save();
@@ -92,10 +97,27 @@ window.onload = function()
         }
         this.advance = function()
         {
-            var nextPosition = this.body[o].slice();
+            var nextPosition = this.body[0].slice();
             nextPosition[0] += 1;
+            // switch(this.direction) 
+            // {
+            //     case "left":
+            //         nextPosition[0] -= 1;
+            //         break;
+            //     case "right":
+            //         nextPosition[0] += 1;
+            //         break;
+            //     case "up":
+            //         nextPosition[1] -= 1;
+            //         break;
+            //     case "down":
+            //         nextPosition[1] += 1;
+            //         break;
+            // }
             this.body.unshift(nextPosition);
-            this.body.pop()
+
+            // pop() permet d'effacer le dernier élément d'un array
+            this.body.pop();
         }
     }
 
