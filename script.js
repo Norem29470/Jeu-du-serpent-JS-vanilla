@@ -16,7 +16,7 @@ window.onload = function()
     var blockSize = 30;
 
     // En augmentant le delay, le mouvement est saccadé, alors qu'en le diminuant, on gagne en fluidité
-    var delay = 1000;
+    var delay = 500;
 
     // Pour créer notre serpent, on l'initialise dans une variable
     //var snakee;
@@ -43,7 +43,7 @@ window.onload = function()
         context = canvas.getContext('2d');
 
         // Ici, on va définir les blocs reliés sur la grille qui composent le corps du serpent [[x1, y1], [x2,y2], etc...]
-        snakee = new Snake([[6,4], [5,4], [4,4]]);
+        snakee = new Snake([[6,4], [5,4], [4,4]], "right");
 
         // Après l'initialisation, on fait appel à la méthode refreshCanvas
         refreshCanvas();
@@ -60,8 +60,8 @@ window.onload = function()
         // A chaque refresh, on veut redessiner notre serpent, on fait donc
         snakee.draw();
 
-        // On fait appel à la méthode advance() pour donner du mouvement au serpent
-        snakee.advance();
+        // On fait appel à la méthode move() pour donner du mouvement au serpent
+        snakee.move();
 
         // Avec le refreshCanvas, on obtient bien un dessin de notre canvas, mais le rectangle reste immobile. On va donc utiliser la fonction setTimeout() qui permet d'exécuter une fonction à chaque fois qu'un certain délai est expiré
         setTimeout(refreshCanvas, delay);
@@ -77,10 +77,10 @@ window.onload = function()
         context.fillRect(x, y, blockSize, blockSize);
     }
 
-    function Snake(body) //, direction)
+    function Snake(body, direction)
     {
         this.body = body;
-        // this.direction = direction;
+        this.direction = direction;
         this.draw = function()
         {
             context.save();
@@ -95,31 +95,81 @@ window.onload = function()
             //Il est important pour le jeu de pouvoir relancer une partie, on va donc restaurer le contexte
             context.restore();
         }
-        this.advance = function()
+
+        this.move = function()
         {
             var nextPosition = this.body[0].slice();
             nextPosition[0] += 1;
-            // switch(this.direction) 
-            // {
-            //     case "left":
-            //         nextPosition[0] -= 1;
-            //         break;
-            //     case "right":
-            //         nextPosition[0] += 1;
-            //         break;
-            //     case "up":
-            //         nextPosition[1] -= 1;
-            //         break;
-            //     case "down":
-            //         nextPosition[1] += 1;
-            //         break;
-            // }
+            switch(this.direction) 
+            {
+                case "left":
+                    nextPosition[0] -= 1;
+                    break;
+                case "right":
+                    nextPosition[0] += 1;
+                    break;
+                case "up":
+                    nextPosition[1] -= 1;
+                    break;
+                case "down":
+                    nextPosition[1] += 1;
+                    break;
+                default:
+                    throw("Invalid direction");
+            }
             this.body.unshift(nextPosition);
 
             // pop() permet d'effacer le dernier élément d'un array
             this.body.pop();
         }
+
+        this.setDirection = function(newDirection)
+        {
+            var allowedDirections;
+            switch (this.direction) {
+
+                case "left":
+                case "right":
+                allowedDirections = ["up", "down"];
+                    break;
+                case "up":
+                case "down":
+                allowedDirections = ["left", "right"];
+                    break;
+                default:
+                    throw("Invalid direction");
+
+            }
+
+            if(allowedDirections.indexOf(newDirection) > -1)
+            {
+                this.direction = newDirection;
+            }
+        };
     }
 
+    document.onkeydown = function handleKeyDown(event)
+    {
+        var key = event.keyCode;
+        var newDirection;
 
+        switch (key) {
+            case 37:
+                newDirection = "left";
+                break;
+            case 38:
+                newDirection = "right";
+                break;
+            case 39:
+                newDirection = "up";
+                break;
+            case 40:
+                newDirection = "down";
+                break;
+            default:
+                return;
+        }
+
+        snakee.setDirection(newDirection);
+    }
 }
