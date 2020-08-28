@@ -2,6 +2,7 @@
 
 // <canvas> en html permet de dessiner
 
+
 window.onload = function()
 {
     //Pour que nos variables soient accessibles par les fonctions (portée des variables), on les déclare au pralable
@@ -99,7 +100,7 @@ window.onload = function()
         this.move = function()
         {
             var nextPosition = this.body[0].slice();
-            nextPosition[0] += 1;
+            
             switch(this.direction) 
             {
                 case "left":
@@ -117,10 +118,12 @@ window.onload = function()
                 default:
                     throw("Invalid direction");
             }
+            // next position = [x1+1,y1]
             this.body.unshift(nextPosition);
 
             // pop() permet d'effacer le dernier élément d'un array
             this.body.pop();
+
         }
 
         this.setDirection = function(newDirection)
@@ -148,8 +151,10 @@ window.onload = function()
         };
     }
 
-    document.onkeydown = function handleKeyDown(event)
+    document.onkeydown = (event) =>
     {
+        //event.preventDefault();
+
         var key = event.keyCode;
         var newDirection;
 
@@ -158,10 +163,10 @@ window.onload = function()
                 newDirection = "left";
                 break;
             case 38:
-                newDirection = "right";
+                newDirection = "up";
                 break;
             case 39:
-                newDirection = "up";
+                newDirection = "right";
                 break;
             case 40:
                 newDirection = "down";
@@ -171,5 +176,6 @@ window.onload = function()
         }
 
         snakee.setDirection(newDirection);
+       
     }
 }
