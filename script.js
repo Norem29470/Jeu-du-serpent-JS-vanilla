@@ -25,6 +25,9 @@ window.onload = function()
 
     var canvas;
 
+    //  Pour dessiner notre pomme, on l'initialise dans une variable
+    var applee;
+
     // On a déclaré des fonctions, mais pour lancer le script, il faut bien faire appel à ces fonctions, d'où l'appel de init() suivant
     init();
 
@@ -46,6 +49,9 @@ window.onload = function()
         // Ici, on va définir les blocs reliés sur la grille qui composent le corps du serpent [[x1, y1], [x2,y2], etc...]
         snakee = new Snake([[6,4], [5,4], [4,4]], "right");
 
+        // Définition de la position de la pomme
+        applee = new Apple([10, 10]);
+
         // Après l'initialisation, on fait appel à la méthode refreshCanvas
         refreshCanvas();
     }
@@ -63,6 +69,9 @@ window.onload = function()
 
         // On fait appel à la méthode move() pour donner du mouvement au serpent
         snakee.move();
+
+        // A chaque refresh, on redessine notre pomme
+        applee.draw();
 
         // Avec le refreshCanvas, on obtient bien un dessin de notre canvas, mais le rectangle reste immobile. On va donc utiliser la fonction setTimeout() qui permet d'exécuter une fonction à chaque fois qu'un certain délai est expiré
         setTimeout(refreshCanvas, delay);
@@ -148,6 +157,35 @@ window.onload = function()
             {
                 this.direction = newDirection;
             }
+        };
+    }
+
+    function Apple(position)
+    {
+        this.position = position;
+
+        // Méthode pour dessiner notre pomme
+        this.draw = function()
+        {
+
+            // context.save() sauvegarde les anciennes informations du Canvas
+            context.save();
+            context.fillStyle = "green";
+
+            // On va créer un rond, ce qui implique l'appel à une méthode différente du serpent avec beginPath()
+            context.beginPath();
+            var radius = blockSize/2;
+
+            // On ne veut pas avoir les coordonnées d'un bloc, mais du centre de la pomme
+            var x = position[0] * blockSize + radius;
+            var y = position[1] * blockSize + radius;
+
+            // Context.arc() permet de donner une forme arrondie à la pomme
+            context.arc(x, y, radius, 0, Math.PI*2, true);
+            context.fill();
+
+            // Context.restore() redéfinit la place de la pomme
+            context.restore();
         };
     }
 
