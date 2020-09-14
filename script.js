@@ -30,7 +30,7 @@ window.onload = function()
 
     //Le serpent ne doit pas entrer en contact avec lui même
     var widthInBlocks = canvasWidth/blockSize;
-    var heightInBlocks = cavasHeight/blockSise;
+    var heightInBlocks = canvasHeight/blockSize;
 
     // On a déclaré des fonctions, mais pour lancer le script, il faut bien faire appel à ces fonctions, d'où l'appel de init() suivant
     init();
@@ -65,20 +65,29 @@ window.onload = function()
     {
         console.log('Canvas refreshed');
 
-        // Pour ne pas avoir de duplication du canvas, mais un déplacement de ce dernier, on va l'effacer pour qu'il réapparaisse plus loin
-        context.clearRect(0, 0, canvas.width, canvas.height);
-
-        // A chaque refresh, on veut redessiner notre serpent, on fait donc
-        snakee.draw();
-
         // On fait appel à la méthode move() pour donner du mouvement au serpent
         snakee.move();
 
-        // A chaque refresh, on redessine notre pomme
-        applee.draw();
+        if(snakee.checkCollision())
+        {
+            // Game over
+        }
+        else
+        {
+            // Pour ne pas avoir de duplication du canvas, mais un déplacement de ce dernier, on va l'effacer pour qu'il réapparaisse plus loin
+            context.clearRect(0, 0, canvasWidth, canvasHeight);
 
-        // Avec le refreshCanvas, on obtient bien un dessin de notre canvas, mais le rectangle reste immobile. On va donc utiliser la fonction setTimeout() qui permet d'exécuter une fonction à chaque fois qu'un certain délai est expiré
-        setTimeout(refreshCanvas, delay);
+            // A chaque refresh, on veut redessiner notre serpent, on fait donc
+            snakee.draw();
+
+            // A chaque refresh, on redessine notre pomme
+            applee.draw();
+
+            // Avec le refreshCanvas, on obtient bien un dessin de notre canvas, mais le rectangle reste immobile. On va donc utiliser la fonction setTimeout() qui permet d'exécuter une fonction à chaque fois qu'un certain délai est expiré
+            setTimeout(refreshCanvas, delay);
+        }
+
+        
     }
 
     // On crée ensuite l'équivalent d'une fonction construct qu'on appellera snake().
@@ -197,7 +206,7 @@ window.onload = function()
             //Le serpent s'est-il mordu la queue ?
             for(var i = 0; i < rest.length; i++)
             {
-                if(snakeX === rest[i][0] || snakeY === rest[i][1])
+                if(snakeX === rest[i][0] && snakeY === rest[i][1])
                 {
                     snakeCollision = true;
                 }
