@@ -28,6 +28,10 @@ window.onload = function()
     //  Pour dessiner notre pomme, on l'initialise dans une variable
     var applee;
 
+    //Le serpent ne doit pas entrer en contact avec lui même
+    var widthInBlocks = canvasWidth/blockSize;
+    var heightInBlocks = cavasHeight/blockSise;
+
     // On a déclaré des fonctions, mais pour lancer le script, il faut bien faire appel à ces fonctions, d'où l'appel de init() suivant
     init();
 
@@ -158,6 +162,51 @@ window.onload = function()
                 this.direction = newDirection;
             }
         };
+
+        this.checkCollision = function()
+        {
+            var wallCollision = false;
+            var snakeCollision = false;
+
+            // Dans tous les cas, c'est la tête du serpent qui entrée en collision avec le bord du canvas ou son corps entraînera la fin de la partie, d'où:
+            var head = this.body[0];
+            var rest = this.body.slice(1);
+
+            // On définit l'emplacement de la tête du serpent
+            var snakeX = head[0];
+            var snakeY = head[1];
+            var minX = 0;
+            var minY = 0;
+
+            // Pour définir si le serpent est sorti du canvas
+            var maxX = widthInBlocks - 1;
+            var maxY = widthInBlocks - 1;
+
+            //Pour vérifier les collisions en abscisses
+            var isNotBetweenHorizontalWalls = snakeX < minX || snakeX > maxX;
+
+            //Idem pour les ordonnées
+            var isNotBetweenVerticalWalls = snakeY < minY || snakeY > maxY;
+
+            //Si je ne suis ni entre les murs verticaux et horizontaux
+            if(isNotBetweenHorizontalWalls || isNotBetweenVerticalWalls)
+            {
+                wallCollision = true;
+            }
+
+            //Le serpent s'est-il mordu la queue ?
+            for(var i = 0; i < rest.length; i++)
+            {
+                if(snakeX === rest[i][0] || snakeY === rest[i][1])
+                {
+                    snakeCollision = true;
+                }
+            }
+
+            // Si il n'y a eu aucune collision, le return donnera false et false
+            return wallCollision || snakeCollision;
+
+        }
     }
 
     function Apple(position)
