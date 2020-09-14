@@ -180,7 +180,7 @@ window.onload = function()
 
             // Pour définir si le serpent est sorti du canvas
             var maxX = widthInBlocks - 1;
-            var maxY = widthInBlocks - 1;
+            var maxY = heightInBlocks - 1;
 
             //Pour vérifier les collisions en abscisses
             var isNotBetweenHorizontalWalls = snakeX < minX || snakeX > maxX;
