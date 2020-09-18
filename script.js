@@ -17,7 +17,7 @@ window.onload = function()
     var blockSize = 30;
 
     // En augmentant le delay, le mouvement est saccadé, alors qu'en le diminuant, on gagne en fluidité
-    var delay = 500;
+    var delay = 1000;
 
     // Pour créer notre serpent, on l'initialise dans une variable
     //var snakee;
@@ -51,7 +51,7 @@ window.onload = function()
         context = canvas.getContext('2d');
 
         // Ici, on va définir les blocs reliés sur la grille qui composent le corps du serpent [[x1, y1], [x2,y2], etc...]
-        snakee = new Snake([[6,4], [5,4], [4,4]], "right");
+        snakee = new Snake([[6,4], [5,4], [4,4], [3,4], [2,4]], "right");
 
         // Définition de la position de la pomme
         applee = new Apple([10, 10]);
@@ -74,6 +74,15 @@ window.onload = function()
         }
         else
         {
+            if(snakee.eatApple(applee)) {
+
+                snakee.ateApple = true;
+
+                do{
+                    applee.setNewPosition()
+                } while (applee.isOnSnake(snakee))
+            }
+
             // Pour ne pas avoir de duplication du canvas, mais un déplacement de ce dernier, on va l'effacer pour qu'il réapparaisse plus loin
             context.clearRect(0, 0, canvasWidth, canvasHeight);
 
@@ -104,6 +113,7 @@ window.onload = function()
     {
         this.body = body;
         this.direction = direction;
+        this.ateApple = false;
         this.draw = function()
         {
             context.save();
@@ -143,8 +153,14 @@ window.onload = function()
             // next position = [x1+1,y1]
             this.body.unshift(nextPosition);
 
+            if(!this.ateApple) {
+
             // pop() permet d'effacer le dernier élément d'un array
             this.body.pop();
+
+            } else {
+                this.ateApple = false;
+            }
 
         }
 
@@ -216,6 +232,16 @@ window.onload = function()
             return wallCollision || snakeCollision;
 
         }
+
+        this.eatApple  = function(appleToEat)
+        {
+            var head = this.body[0];
+            if(head[0] === appleToEat.position[0] && head[1] === appleToEat.position[1]) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     function Apple(position)
@@ -235,8 +261,8 @@ window.onload = function()
             var radius = blockSize/2;
 
             // On ne veut pas avoir les coordonnées d'un bloc, mais du centre de la pomme
-            var x = position[0] * blockSize + radius;
-            var y = position[1] * blockSize + radius;
+            var x = this.position[0] * blockSize + radius;
+            var y = this.position[1] * blockSize + radius;
 
             // Context.arc() permet de donner une forme arrondie à la pomme
             context.arc(x, y, radius, 0, Math.PI*2, true);
@@ -245,6 +271,26 @@ window.onload = function()
             // Context.restore() redéfinit la place de la pomme
             context.restore();
         };
+
+        this.setNewPosition = function()
+        {
+            var newX = Math.round(Math.random() * (widthInBlocks - 1));
+            var newY = Math.round(Math.random() * (heightInBlocks - 1));
+            this.position = [newX, newY];
+        }
+
+        this.isOnSnake = function(snakeToCheck)
+        {
+            var isOnSnake = false;
+
+            for(var i = 0; i < snakeToCheck.body.lenght; i++) {
+                if(this.position[0] === snakeToCheck.body[i][0] && this.position[1] === snakeToCheck.body[i][1]) {
+                    isOnSnake = true;
+                }
+            }
+
+            return isOnSnake;
+        }
     }
 
     document.onkeydown = (event) =>
@@ -274,4 +320,5 @@ window.onload = function()
         snakee.setDirection(newDirection);
        
     }
+
 }
