@@ -34,6 +34,8 @@ window.onload = function()
 
     var score;
 
+    var timeout;
+
     // On a déclaré des fonctions, mais pour lancer le script, il faut bien faire appel à ces fonctions, d'où l'appel de init() suivant
     init();
 
@@ -45,7 +47,7 @@ window.onload = function()
         canvas.style.border = "30px solid gray";
         canvas.style.margin = "50px auto";
         canvas.style.display = "block";
-        canvas.style.backgroundColor = "#ddd"
+        canvas.style.backgroundColor = "#ddd";
     
         // appendChild permet d'accrocher un tag au body
         // En ce qui nous concerne, il s'agit du tag <canvas>
@@ -62,8 +64,7 @@ window.onload = function()
         applee = new Apple([10, 10]);
 
         score = 0;
-
-        
+       
         // Après l'initialisation, on fait appel à la méthode refreshCanvas
         refreshCanvas();
     }
@@ -105,7 +106,7 @@ window.onload = function()
             applee.draw();
 
             // Avec le refreshCanvas, on obtient bien un dessin de notre canvas, mais le rectangle reste immobile. On va donc utiliser la fonction setTimeout() qui permet d'exécuter une fonction à chaque fois qu'un certain délai est expiré
-            setTimeout(refreshCanvas, delay);
+            timeout = setTimeout(refreshCanvas, delay);
         }
 
         
@@ -141,6 +142,8 @@ window.onload = function()
         applee = new Apple([10, 10]);
 
         score = 0;
+
+        clearTimeout(timeout);
 
         // Après l'initialisation, on fait appel à la méthode refreshCanvas
         refreshCanvas();
