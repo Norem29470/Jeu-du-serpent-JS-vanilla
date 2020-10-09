@@ -32,6 +32,8 @@ window.onload = function()
     var widthInBlocks = canvasWidth/blockSize;
     var heightInBlocks = canvasHeight/blockSize;
 
+    var score;
+
     // On a déclaré des fonctions, mais pour lancer le script, il faut bien faire appel à ces fonctions, d'où l'appel de init() suivant
     init();
 
@@ -56,6 +58,9 @@ window.onload = function()
         // Définition de la position de la pomme
         applee = new Apple([10, 10]);
 
+        score = 0;
+
+        
         // Après l'initialisation, on fait appel à la méthode refreshCanvas
         refreshCanvas();
     }
@@ -70,12 +75,13 @@ window.onload = function()
 
         if(snakee.checkCollision())
         {
-            // Game over
+            gameOver();
         }
         else
         {
             if(snakee.eatApple(applee)) {
 
+                score++;
                 snakee.ateApple = true;
 
                 do{
@@ -92,11 +98,44 @@ window.onload = function()
             // A chaque refresh, on redessine notre pomme
             applee.draw();
 
+            drawScore();
+
             // Avec le refreshCanvas, on obtient bien un dessin de notre canvas, mais le rectangle reste immobile. On va donc utiliser la fonction setTimeout() qui permet d'exécuter une fonction à chaque fois qu'un certain délai est expiré
             setTimeout(refreshCanvas, delay);
         }
 
         
+    }
+
+    function gameOver()
+    {
+        context.save();
+        context.fillText("Game Over", 15, 30);
+        context.fillText("Appuyez sur la barre \"espace\" pour rejouer", 15, 45);
+
+
+        context.restore();
+    }
+
+    function restart()
+    {
+        // Position et direction initiale du serpent
+        snakee = new Snake([[6,4], [5,4], [4,4], [3,4], [2,4]], "right");
+
+        // Définition de la position de la pomme
+        applee = new Apple([10, 10]);
+
+        score = 0;
+
+        // Après l'initialisation, on fait appel à la méthode refreshCanvas
+        refreshCanvas();
+    }
+
+    function drawScore()
+    {
+        context.save();
+        context.fillText(score.toString(), 30, canvasHeight - 30);
+        context.restore();
     }
 
     // On crée ensuite l'équivalent d'une fonction construct qu'on appellera snake().
@@ -313,6 +352,9 @@ window.onload = function()
             case 40:
                 newDirection = "down";
                 break;
+            case 32:
+                restart();
+                return;
             default:
                 return;
         }
