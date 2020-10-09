@@ -17,7 +17,7 @@ window.onload = function()
     var blockSize = 30;
 
     // En augmentant le delay, le mouvement est saccadé, alors qu'en le diminuant, on gagne en fluidité
-    var delay = 1000;
+    var delay = 200;
 
     // Pour créer notre serpent, on l'initialise dans une variable
     //var snakee;
@@ -42,7 +42,10 @@ window.onload = function()
         canvas = document.createElement('canvas');
         canvas.width = canvasWidth;
         canvas.height = canvasHeight;
-        canvas.style.border = "1px solid";
+        canvas.style.border = "30px solid gray";
+        canvas.style.margin = "50px auto";
+        canvas.style.display = "block";
+        canvas.style.backgroundColor = "#ddd"
     
         // appendChild permet d'accrocher un tag au body
         // En ce qui nous concerne, il s'agit du tag <canvas>
@@ -92,13 +95,14 @@ window.onload = function()
             // Pour ne pas avoir de duplication du canvas, mais un déplacement de ce dernier, on va l'effacer pour qu'il réapparaisse plus loin
             context.clearRect(0, 0, canvasWidth, canvasHeight);
 
+            // On déplace la méthode pour modifier l'ordre d'affichage des éléments, afin que le score ne cache pas le serpent et la pomme
+            drawScore();
+
             // A chaque refresh, on veut redessiner notre serpent, on fait donc
             snakee.draw();
 
             // A chaque refresh, on redessine notre pomme
             applee.draw();
-
-            drawScore();
 
             // Avec le refreshCanvas, on obtient bien un dessin de notre canvas, mais le rectangle reste immobile. On va donc utiliser la fonction setTimeout() qui permet d'exécuter une fonction à chaque fois qu'un certain délai est expiré
             setTimeout(refreshCanvas, delay);
@@ -110,9 +114,20 @@ window.onload = function()
     function gameOver()
     {
         context.save();
-        context.fillText("Game Over", 15, 30);
-        context.fillText("Appuyez sur la barre \"espace\" pour rejouer", 15, 45);
 
+        context.font = "bold 70px sans-serif";
+        context.fillStyle = "#000";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.strokeStyle = "white";
+        context.lineWidth = 5;
+        var centreX = canvasWidth / 2;
+        var centreY = canvasHeight / 2;
+        context.strokeText("Game Over", centreX, centreY - 180)
+        context.fillText("Game Over", centreX, centreY - 180);
+        context.font = "bold 30px sans-serif";
+        context.strokeText("Appuyez sur la barre Espace pour rejouer", centreX, centreY - 120);
+        context.fillText("Appuyez sur la barre Espace pour rejouer", centreX, centreY - 120);
 
         context.restore();
     }
@@ -134,7 +149,13 @@ window.onload = function()
     function drawScore()
     {
         context.save();
-        context.fillText(score.toString(), 30, canvasHeight - 30);
+        context.font = "bold 200px sans-serif";
+        context.fillStyle = "gray";
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        var centreX = canvasWidth / 2;
+        var centreY = canvasHeight / 2;
+        context.fillText(score.toString(), centreX, centreY);
         context.restore();
     }
 
